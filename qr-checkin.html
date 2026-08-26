@@ -1,0 +1,15 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Barber Bomb — تسجيل زيارة</title>
+<style>body{margin:0;background:#050505;color:#fff;font-family:Arial}.box{width:min(520px,90%);margin:50px auto;padding:28px;background:#0d0d0d;border:1px solid #3b2d16;border-radius:16px;text-align:center}h1,h2{color:#f3c85c}input,button{width:100%;padding:13px;margin:8px 0;border-radius:8px}input{background:#111;color:#fff;border:1px solid #444}button{background:#e1b447;border:0;font-weight:900;cursor:pointer}.msg{color:#aaa;line-height:1.8}.ok{color:#8ee89a}</style></head>
+<body><div class="box"><h1>Barber Bomb</h1><h2>تسجيل الزيارة عبر QR</h2>
+<p class="msg">أدخل رقم الهاتف، ويمكنك إضافة رقم الحجز إذا كان لديك. بعد انتهاء الخدمة، يؤكد الموظف الزيارة من لوحة الإدارة.</p>
+<input id="phone" type="tel" placeholder="+30..." required><input id="booking" placeholder="رقم الحجز (اختياري)">
+<button onclick="register()">تسجيل الوصول</button><div id="msg" class="msg"></div></div>
+<script>
+function register(){
+ const phone=document.getElementById('phone').value.trim(), booking=document.getElementById('booking').value.trim();
+ if(phone.length<5){msg.textContent='أدخل رقم هاتف صحيح.';return}
+ const item={phone,booking,at:new Date().toISOString(),status:'waiting_confirmation'};
+ localStorage.setItem('barberBombCheckin',JSON.stringify(item));
+ msg.className='msg ok';msg.textContent='تم تسجيل الوصول بنجاح. بعد انتهاء الخدمة سيؤكد الموظف الزيارة من لوحة الإدارة.';
+}
+</script></body></html>

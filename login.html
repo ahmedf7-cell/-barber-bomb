@@ -1,0 +1,6 @@
+<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Barber Bomb — دخول الإدارة</title>
+<style>body{margin:0;background:#050505;color:#fff;font-family:Arial}.box{width:min(400px,90%);margin:90px auto;background:#0e0e0e;border:1px solid #3b2d16;border-radius:14px;padding:25px}h1{color:#e1b447}input,button{width:100%;padding:12px;margin:7px 0;border-radius:8px;box-sizing:border-box}input{background:#111;color:#fff;border:1px solid #444}button{background:#e1b447;border:0;font-weight:900;cursor:pointer}.err{color:#ff9999}</style>
+<div class="box"><h1>Barber Bomb</h1><h2>دخول لوحة الإدارة</h2><input id="u" placeholder="اسم المستخدم" autocomplete="username"><input id="p" type="password" placeholder="كلمة المرور" autocomplete="current-password"><button onclick="login()">دخول</button><div id="e" class="err"></div></div>
+<script>
+async function login(){e.textContent='';try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u.value,password:p.value})});const d=await r.json();if(!r.ok)throw Error(d.error);localStorage.setItem('bb_token',d.token);location.href='admin.html'}catch(x){e.textContent=x.message}}
+</script>

@@ -1,0 +1,15 @@
+services:
+  barber-bomb:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    volumes:
+      - barber_bomb_data:/app/data
+    environment:
+      DB_PATH: /app/data/barber-bomb.sqlite
+
+volumes:
+  barber_bomb_data:

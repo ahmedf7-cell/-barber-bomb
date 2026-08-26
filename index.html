@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Barber Bomb | Premium Grooming</title>
+<style>
+:root{--bg:#050505;--panel:#0d0d0d;--gold:#d8aa3d;--gold2:#f3c85c;--line:#3b2d16;--muted:#aaa}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 80% 0%,#171208 0,#050505 34%);color:#fff;font-family:Arial,sans-serif}
+.wrap{width:min(1180px,94%);margin:auto}
+nav{min-height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #191919;gap:18px}
+nav img{width:105px;height:68px;object-fit:contain}
+nav .links{display:flex;align-items:center;gap:20px}
+nav a{color:#eee;text-decoration:none;font-weight:700}
+nav a:hover{color:var(--gold2)}
+.lang{background:#111;color:var(--gold2);border:1px solid var(--gold);border-radius:9px;padding:9px 10px}
+button{cursor:pointer;font:inherit}
+.primary,.secondary,.book{border-radius:10px;padding:12px 20px;font-weight:900}
+.primary{background:linear-gradient(135deg,#f1c95d,#b87f1d);border:0;color:#111}
+.secondary,.book{background:transparent;color:var(--gold2);border:1px solid var(--gold)}
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:32px;align-items:center;padding:34px 0}
+.hero-photo{width:100%;height:450px;object-fit:cover;border-radius:18px;box-shadow:0 0 0 1px var(--line),0 20px 60px #000}
+.eyebrow{color:var(--gold2);font-weight:900;letter-spacing:1px}
+.hero h1{font-size:clamp(42px,5vw,70px);line-height:1.05;margin:14px 0}
+.hero h1 span{color:var(--gold2)}
+.hero p{font-size:18px;line-height:1.9;color:var(--muted)}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.offer{margin:8px 0 18px;border:1px solid var(--gold);background:linear-gradient(90deg,#211906,#0d0d0d);padding:13px 16px;border-radius:12px;color:var(--gold2);font-weight:900}
+.features{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #292929;border-radius:14px;background:#090909;padding:16px;margin:0 0 34px}
+.feature{text-align:center;border-left:1px solid #242424;padding:8px}.feature:last-child{border-left:0}
+.feature b{display:block;color:var(--gold2);margin-bottom:6px}.feature span{font-size:13px;color:var(--muted)}
+.title{text-align:center}.title h2{color:var(--gold2);font-size:32px;margin:8px}.title p{color:var(--muted)}
+.services{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:18px 0 30px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;overflow:hidden}
+.card img{width:100%;height:245px;object-fit:cover;display:block}
+.body{padding:16px}.body h3{font-size:22px;margin:0 0 8px}.body p{color:var(--muted);min-height:45px;line-height:1.7}
+.price{display:flex;align-items:center;justify-content:space-between;margin:15px 0;gap:8px}
+.old{text-decoration:line-through;color:#777}.new{font-size:25px;color:var(--gold2);font-weight:900}
+.badge{border:1px solid #72551f;background:#211906;color:var(--gold2);padding:7px 9px;border-radius:8px;font-size:13px}
+.card .primary{width:100%}
+.bottom{display:grid;grid-template-columns:1fr 1.5fr;gap:20px;border:1px solid var(--line);border-radius:15px;padding:18px;margin:18px 0 30px}
+.qr{display:flex;align-items:center;gap:15px}.qr img{width:88px;height:88px;background:#fff}
+.loyal{text-align:center}.steps{display:flex;justify-content:center;gap:7px;margin-top:12px}
+.step{width:36px;height:36px;border:1px solid #5d461c;border-radius:50%;display:grid;place-items:center;color:var(--gold2)}
+.free{background:var(--gold2);color:#111!important}
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:0 0 40px}
+.contact-card{border:1px solid var(--line);border-radius:15px;padding:20px;background:var(--panel)}
+.contact-card h3{color:var(--gold2)}.contact-card p{color:var(--muted);line-height:1.8}
+.contact a{color:var(--gold2)}
+footer{border-top:1px solid #222;padding:24px 0 36px;color:#777;text-align:center}
+@media(max-width:800px){
+ nav .links{display:none}.hero{grid-template-columns:1fr}.hero-photo{height:310px}
+ .features{grid-template-columns:repeat(2,1fr)}.services,.contact,.bottom{grid-template-columns:1fr}
+ .card img{height:260px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <button class="book" onclick="document.getElementById('booking').showModal()">احجز الآن 📅</button>
+  <div class="links">
+    <a href="#home">الرئيسية</a><a href="#services">الخدمات</a><a href="#loyalty">الولاء</a><a href="#contact">تواصل معنا</a>
+    <select class="lang" aria-label="Language" onchange="setLanguage(this.value)">
+      <option value="ar">العربية</option><option value="en">English</option><option value="el">Ελληνικά</option>
+    </select>
+  </div>
+  <img src="logo.jpg" alt="Barber Bomb">
+</nav>
+
+<section class="hero" id="home">
+  <img class="hero-photo" src="hero.jpg" alt="Barber Bomb premium grooming">
+  <div>
+    <div class="eyebrow">BARBER BOMB • PREMIUM GROOMING</div>
+    <h1>أسلوبك… <span>قنبلة ثقة</span></h1>
+    <div class="offer">🔥 خصم 25% على الخدمات — احجز الآن</div>
+    <p>حلاقة احترافية، تفاصيل دقيقة، وتجربة فاخرة مصممة لتبرز شخصيتك.</p>
+    <div class="actions">
+      <button class="primary" onclick="document.getElementById('booking').showModal()">احجز موعدك الآن</button>
+      <a class="secondary" href="https://www.google.com/maps/search/?api=1&query=Sivitanidou+34,+Kallithea,+Athens" target="_blank" rel="noopener">📍 الاتجاهات</a>
+    </div>
+    <p style="font-size:14px">☎ <a href="tel:+306944417339" style="color:var(--gold2)">+30 694-441-7339</a> · <a href="https://wa.me/306944417339" target="_blank" style="color:var(--gold2)">واتساب</a></p>
+  </div>
+</section>
+
+<section class="features">
+  <div class="feature"><b>⚡ حجز سريع</b><span>خطوات بسيطة وسريعة</span></div>
+  <div class="feature"><b>🛡 تعقيم وأمان</b><span>أدوات معقمة 100%</span></div>
+  <div class="feature"><b>✂ حلاقين محترفين</b><span>أحمد أو سامي</span></div>
+  <div class="feature"><b>🕙 ساعات العمل</b><span>10:30 صباحًا — 10 مساءً</span></div>
+</section>
+
+<section id="services">
+ <div class="title"><h2>★ خدماتنا ★</h2><p>كل خدمة بسعر أساسي 10€، والخصم الحالي 25%</p></div>
+ <div class="services">
+  <article class="card"><img src="service-cut.jpg" alt="قصة شعر"><div class="body"><h3>قصة شعر</h3><p>قصة عصرية بتفاصيل دقيقة تناسب شكل وجهك.</p><div class="price"><span class="old">10€</span><span class="badge">25% خصم</span><span class="new">7.50€</span></div><button class="primary" onclick="document.getElementById('booking').showModal()">احجز الآن</button></div></article>
+  <article class="card"><img src="service-combo.jpg" alt="قصة شعر"><div class="body"><h3>قصة شعر + لحية</h3><p>قصة شعر احترافية مع تحديد وتشذيب اللحية.</p><div class="price"><span class="old">10€</span><span class="badge">25% خصم</span><span class="new">7.50€</span></div><button class="primary" onclick="document.getElementById('booking').showModal()">احجز الآن</button></div></article>
+  <article class="card"><img src="service-beard.jpg" alt="تحديد لحية"><div class="body"><h3>تحديد لحية</h3><p>تحديد وتنظيف اللحية بأعلى دقة.</p><div class="price"><span class="old">10€</span><span class="badge">25% خصم</span><span class="new">7.50€</span></div><button class="primary" onclick="document.getElementById('booking').showModal()">احجز الآن</button></div></article>
+ </div>
+</section>
+
+<section class="bottom" id="loyalty">
+ <div class="qr"><img src="qr.jpg" alt="QR Code"><div><h3>جاي بدون حجز؟</h3><p style="color:var(--muted)">امسح QR عند الزيارة، سجّل رقمك، وبعد تأكيد الحلاقة من الإدارة تُحتسب الزيارة.</p></div></div>
+ <div class="loyal"><h3 style="color:var(--gold2)">برنامج الولاء ⭐</h3><div style="color:var(--muted)">بعد 6 زيارات مكتملة، <b style="color:#fff">الزيارة السابعة مجانًا</b>.</div><div class="steps"><i class="step">1</i><i class="step">2</i><i class="step">3</i><i class="step">4</i><i class="step">5</i><i class="step">6</i><i class="step free">🎁</i></div></div>
+</section>
+
+<section class="contact" id="contact">
+ <div class="contact-card"><h3>📍 تواصل معنا</h3><p>Sivitanidou 34, Kallithea, Athens</p><p>☎ <a href="tel:+306944417339">+30 694-441-7339</a><br>💬 <a href="https://wa.me/306944417339" target="_blank">واتساب</a></p></div>
+ <div class="contact-card"><h3>🕙 ساعات العمل</h3><p>يوميًا: 10:30 صباحًا — 10:00 مساءً</p><p><a href="https://www.google.com/maps/search/?api=1&query=Sivitanidou+34,+Kallithea,+Athens" target="_blank">فتح الموقع على خرائط Google →</a></p></div>
+</section>
+
+<footer>© 2026 Barber Bomb — Premium Grooming</footer>
+</div>
+
+<dialog id="booking" style="background:#0d0d0d;color:#fff;border:1px solid #3b2d16;border-radius:15px;padding:24px;max-width:560px;width:92%">
+ <form id="bookingForm">
+  <h2 style="color:#f3c85c;margin-top:0">احجز موعدك</h2>
+  <div id="bookingMessage" style="display:none;padding:10px;border-radius:8px;margin-bottom:12px"></div>
+
+  <label>الخدمة<br>
+   <select id="service" required style="width:100%;padding:12px;margin:8px 0;background:#111;color:#fff;border:1px solid #333;border-radius:8px">
+    <option value="قصة شعر">قصة شعر — 7.50€</option>
+    <option value="قصة شعر + لحية">قصة شعر + لحية — 7.50€</option>
+    <option value="تحديد لحية">تحديد لحية — 7.50€</option>
+   </select>
+  </label>
+
+  <label>الحلاق<br>
+   <select id="barber" required style="width:100%;padding:12px;margin:8px 0;background:#111;color:#fff;border:1px solid #333;border-radius:8px">
+    <option value="أحمد">أحمد</option>
+    <option value="سامي">سامي</option>
+   </select>
+  </label>
+
+  <label>التاريخ<br>
+   <input id="date" type="date" required style="width:100%;padding:12px;margin:8px 0;background:#111;color:#fff;border:1px solid #333;border-radius:8px">
+  </label>
+
+  <label>الوقت<br>
+   <select id="time" required style="width:100%;padding:12px;margin:8px 0;background:#111;color:#fff;border:1px solid #333;border-radius:8px">
+    <option value="">اختر التاريخ أولًا</option>
+   </select>
+  </label>
+
+  <label>الاسم<br>
+   <input id="name" type="text" required minlength="2" autocomplete="name" style="width:100%;padding:12px;margin:8px 0;background:#111;color:#fff;border:1px solid #333;border-radius:8px">
+  </label>
+
+  <label>رقم الهاتف<br>
+   <input id="phone" type="tel" required autocomplete="tel" placeholder="+30..." style="width:100%;padding:12px;margin:8px 0;background:#111;color:#fff;border:1px solid #333;border-radius:8px">
+  </label>
+
+  <div style="display:flex;gap:10px;margin-top:14px">
+   <button class="primary" type="submit">تأكيد الحجز</button>
+   <button class="secondary" type="button" onclick="document.getElementById('booking').close()">إلغاء</button>
+  </div>
+ </form>
+</dialog>
+
+<script>
+const OPEN_MIN = 10 * 60 + 30;
+const CLOSE_MIN = 22 * 60;
+const SLOT_MIN = 30;
+
+async function publicBookings(date, barber){
+  const qs = new URLSearchParams({date, barber});
+  const r = await fetch('/api/bookings/public?' + qs.toString());
+  const d = await r.json();
+  if(!r.ok) throw Error(d.error || 'تعذر تحميل المواعيد');
+  return d;
+}
+
+async function slotsForDate(){
+  const date = document.getElementById('date').value;
+  const barber = document.getElementById('barber').value;
+  const select = document.getElementById('time');
+  select.innerHTML = '';
+  if(!date){ select.innerHTML = '<option value="">اختر التاريخ أولًا</option>'; return; }
+
+  const now = new Date();
+  const selected = new Date(date + 'T00:00:00');
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if(selected < today){
+    select.innerHTML = '<option value="">اختر تاريخًا صحيحًا</option>'; return;
+  }
+
+  try {
+    const taken = new Set((await publicBookings(date, barber)).map(b => b.time));
+    let count = 0;
+
+    for(let m = OPEN_MIN; m + SLOT_MIN <= CLOSE_MIN; m += SLOT_MIN){
+      const hh = String(Math.floor(m/60)).padStart(2,'0');
+      const mm = String(m%60).padStart(2,'0');
+      const value = `${hh}:${mm}`;
+
+      const currentMinutes = now.getHours()*60 + now.getMinutes();
+      if(selected.getTime() === today.getTime() && m <= currentMinutes) continue;
+
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = value + (taken.has(value) ? ' — محجوز' : '');
+      option.disabled = taken.has(value);
+      if(!option.disabled) count++;
+      select.appendChild(option);
+    }
+    if(!count) select.innerHTML = '<option value="">لا توجد أوقات متاحة لهذا الحلاق في هذا اليوم</option>';
+  } catch(e) {
+    select.innerHTML = '<option value="">تعذر تحميل المواعيد</option>';
+  }
+}
+
+function showBookingMessage(text, ok=false){
+  const el = document.getElementById('bookingMessage');
+  el.textContent = text;
+  el.style.display = 'block';
+  el.style.background = ok ? '#17341d' : '#351818';
+  el.style.color = ok ? '#a8efb4' : '#ffb1b1';
+}
+
+document.getElementById('date').min = new Date().toISOString().slice(0,10);
+document.getElementById('date').addEventListener('change', slotsForDate);
+document.getElementById('barber').addEventListener('change', slotsForDate);
+
+document.getElementById('bookingForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  const booking = {
+    service: document.getElementById('service').value,
+    barber: document.getElementById('barber').value,
+    date: document.getElementById('date').value,
+    time: document.getElementById('time').value,
+    name: document.getElementById('name').value.trim(),
+    phone: document.getElementById('phone').value.trim()
+  };
+
+  if(!booking.date || !booking.time){
+    showBookingMessage('اختر التاريخ والوقت أولًا.');
+    return;
+  }
+
+  try {
+    const r = await fetch('/api/bookings', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(booking)
+    });
+    const d = await r.json();
+    if(!r.ok) throw Error(d.error || 'تعذر تسجيل الحجز');
+
+    showBookingMessage(`تم تسجيل طلب الحجز رقم ${d.booking_code} بنجاح. سيتم تأكيد الموعد من الإدارة.`, true);
+
+    const waText = `مرحباً ${booking.name}، تم تسجيل طلب حجزك في Barber Bomb.%0Aالخدمة: ${booking.service}%0Aالحلاق: ${booking.barber}%0Aالتاريخ: ${booking.date}%0Aالوقت: ${booking.time}%0Aرقم الحجز: ${d.booking_code}`;
+    setTimeout(() => {
+      window.open('https://wa.me/' + booking.phone.replace(/\D/g,'') + '?text=' + waText, '_blank');
+    }, 400);
+
+    this.reset();
+    document.getElementById('date').min = new Date().toISOString().slice(0,10);
+    document.getElementById('time').innerHTML = '<option value="">اختر التاريخ أولًا</option>';
+  } catch(err) {
+    showBookingMessage(err.message);
+    await slotsForDate();
+  }
+});
+
+function setLanguage(lang){
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.documentElement.lang = lang;
+  alert(lang === 'ar' ? 'العربية مفعّلة.' :
+        lang === 'en' ? 'English selected.' :
+        'Επιλέχθηκαν Ελληνικά.');
+}
+
+// Convenience: expose bookings for the next admin-dashboard stage.
+
+</script>
+</body>
+</html>

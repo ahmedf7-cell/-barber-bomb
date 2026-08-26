@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Barber Bomb — لوحة الإدارة</title>
+<style>
+:root{--bg:#050505;--panel:#0e0e0e;--gold:#e1b447;--line:#332610;--muted:#aaa}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:Arial,sans-serif}
+.wrap{width:min(1200px,94%);margin:28px auto}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+h1,h2{color:var(--gold)}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
+.stat,.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}.stat b{font-size:28px;color:var(--gold)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.tabs button,.action{background:#111;color:var(--gold);border:1px solid var(--gold);padding:9px 13px;border-radius:8px;cursor:pointer}
+.tabs button.active{background:var(--gold);color:#111}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
+input,select{background:#111;color:#fff;border:1px solid #444;padding:10px;border-radius:8px}
+table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid #282828;padding:10px;text-align:right;vertical-align:top}
+th{color:var(--gold)}.status{font-weight:bold}.ok{color:#83e89a}.pending{color:#ffd76a}.cancel{color:#ff8989}
+.small{font-size:13px;color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}table{font-size:13px}}
+</style>
+</head>
+<body><script>
+if(!localStorage.getItem('bb_token')) location.replace('login.html');
+async function api(url,opts={}){
+ opts.headers=Object.assign({'Authorization':'Bearer '+localStorage.getItem('bb_token'),'Content-Type':'application/json'},opts.headers||{});
+ const r=await fetch(url,opts); if(r.status===401){localStorage.removeItem('bb_token');location.replace('login.html');throw Error('انتهت الجلسة')}
+ const d=await r.json(); if(!r.ok)throw Error(d.error||'حدث خطأ'); return d;
+}
+</script><div class="wrap">
+<div class="top"><div><h1>Barber Bomb</h1><div class="small">لوحة الإدارة — الحجوزات والولاء</div></div><button class="action" onclick="localStorage.removeItem('bb_token');location.href='login.html'">تسجيل الخروج</button><button class="action" onclick="location.href='index.html'">فتح الموقع</button></div>
+<div class="stats">
+<div class="stat"><div class="small">كل الحجوزات</div><b id="sAll">0</b></div>
+<div class="stat"><div class="small">قيد الانتظار</div><b id="sPending">0</b></div>
+<div class="stat"><div class="small">المواعيد المؤكدة</div><b id="sConfirmed">0</b></div>
+<div class="stat"><div class="small">العملاء</div><b id="sCustomers">0</b></div>
+</div>
+<div class="tabs">
+<button class="active" onclick="showTab('bookings',this)">الحجوزات</button>
+<button onclick="showTab('customers',this)">العملاء والولاء</button>
+</div>
+
+<section id="bookings">
+<div class="panel">
+<h2>الحجوزات</h2>
+<div class="filters">
+<input id="search" placeholder="بحث بالاسم أو الهاتف أو رقم الحجز" oninput="renderBookings()">
+<select id="barberFilter" onchange="renderBookings()"><option value="">كل الحلاقين</option><option>أحمد</option><option>سامي</option></select>
+<select id="statusFilter" onchange="renderBookings()"><option value="">كل الحالات</option><option value="pending">قيد الانتظار</option><option value="confirmed">مؤكد</option><option value="cancelled">ملغي</option><option value="completed">مكتمل</option></select>
+</div><div id="bookingTable"></div>
+</div></section>
+
+<section id="customers" style="display:none">
+<div class="grid">
+<div class="panel"><h2>العملاء</h2><input id="customerSearch" placeholder="ابحث برقم الهاتف أو الاسم" oninput="renderCustomers()"><div id="customerTable"></div></div>
+<div class="panel"><h2>نظام الولاء</h2><p class="small">بعد انتهاء الخدمة اضغط «تأكيد الزيارة». تُضاف زيارة واحدة فقط لكل حجز مكتمل.</p><div id="loyaltyTable"></div></div>
+</div></section>
+</div>
+
+<script>
+let API_BOOKINGS_CACHE=[];
+let API_CUSTOMERS_CACHE=[];
+
+async function getBookingsAsync(){
+  const rows=await api('/api/bookings');
+  API_BOOKINGS_CACHE=rows.map(b=>({
+    id:b.booking_code, booking_code:b.booking_code, name:b.name, phone:b.phone,
+    service:b.service, barber:b.barber, date:b.date, time:b.time,
+    status:b.status, visitCounted:!!b.visit_counted
+  }));
+  return API_BOOKINGS_CACHE;
+}
+async function getCustomersAsync(){
+  const rows=await api('/api/customers');
+  API_CUSTOMERS_CACHE=rows.map(c=>({
+    id:c.id, name:c.name, phone:c.phone, visits:Number(c.visits||0)
+  }));
+  return API_CUSTOMERS_CACHE;
+}
+function getBookings(){return API_BOOKINGS_CACHE}
+function getCustomers(){return API_CUSTOMERS_CACHE}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+async function confirmBooking(id){
+ try{await api('/api/bookings/'+encodeURIComponent(id)+'/status',{method:'PATCH',body:JSON.stringify({status:'confirmed'})}); await renderAll();}catch(e){alert(e.message)}
+}
+async function cancelBooking(id){
+ try{await api('/api/bookings/'+encodeURIComponent(id)+'/status',{method:'PATCH',body:JSON.stringify({status:'cancelled'})}); await renderAll();}catch(e){alert(e.message)}
+}
+async function completeVisit(id){
+ try{
+  const d=await api('/api/bookings/'+encodeURIComponent(id)+'/visit',{method:'POST',body:'{}'});
+  await renderAll();
+  alert(d.free_visit?'مبروك! وصل العميل للزيارة السابعة المجانية 🎁':`تم تأكيد الزيارة. بقي ${d.remaining} زيارات حتى الزيارة السابعة المجانية.`);
+ }catch(e){alert(e.message)}
+}
+
+function renderBookings(){
+ const bs=getBookings().sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+ const q=(document.getElementById('search').value||'').toLowerCase();
+ const bf=document.getElementById('barberFilter').value, sf=document.getElementById('statusFilter').value;
+ const list=bs.filter(b=>(!q||[b.id,b.name,b.phone].some(v=>String(v||'').toLowerCase().includes(q)))&&(!bf||b.barber===bf)&&(!sf||b.status===sf));
+ if(!list.length){bookingTable.innerHTML='<p class="small">لا توجد حجوزات مطابقة.</p>';return}
+ bookingTable.innerHTML='<table><thead><tr><th>الموعد</th><th>العميل</th><th>الخدمة</th><th>الحلاق</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody>'+
+ list.map(b=>`<tr><td>${esc(b.date)}<br>${esc(b.time)}<br><span class="small">${esc(b.id)}</span></td><td>${esc(b.name)}<br>${esc(b.phone)}</td><td>${esc(b.service)}</td><td>${esc(b.barber)}</td><td class="status ${b.status==='confirmed'?'ok':b.status==='pending'?'pending':b.status==='cancelled'?'cancel':''}">${esc(b.status)}</td><td>
+ ${b.status==='pending'?`<button class="action" onclick="confirmBooking('${b.id}')">تأكيد</button> <button class="action" onclick="cancelBooking('${b.id}')">إلغاء</button>`:''}
+ ${b.status==='confirmed'?`<button class="action" onclick="completeVisit('${b.id}')">تأكيد الزيارة</button>`:''}
+ ${b.status==='completed'?`<span class="ok">✓ زيارة محسوبة</span>`:''}
+ </td></tr>`).join('')+'</tbody></table>';
+}
+function renderCustomers(){
+ const cs=getCustomers(), q=(document.getElementById('customerSearch').value||'').toLowerCase();
+ const list=cs.filter(c=>!q||c.name.toLowerCase().includes(q)||c.phone.toLowerCase().includes(q));
+ customerTable.innerHTML=list.length?'<table><thead><tr><th>العميل</th><th>الهاتف</th><th>الزيارات</th><th>المتبقي</th></tr></thead><tbody>'+
+ list.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.phone)}</td><td>${c.visits}/7</td><td>${c.visits>=7?'<span class="ok">مجانية 🎁</span>':(7-c.visits)+' زيارات'}<br><button class="action" onclick="loyaltyMessage('${encodeURIComponent(c.phone)}')">رسالة واتساب</button></td></tr>`).join('')+'</tbody></table>':'<p class="small">لا يوجد عملاء.</p>';
+ loyaltyTable.innerHTML=list.length?'<table><thead><tr><th>العميل</th><th>التقدم</th><th>المكافأة</th></tr></thead><tbody>'+
+ list.map(c=>`<tr><td>${esc(c.name)}</td><td>${c.visits}/7</td><td>${c.visits>=7?'الزيارة السابعة مجانية 🎁':'بقي '+(7-c.visits)}</td></tr>`).join('')+'</tbody></table>':'<p class="small">لا توجد بيانات.</p>';
+}
+function renderStats(){
+ const bs=getBookings(), cs=getCustomers();
+ sAll.textContent=bs.length;sPending.textContent=bs.filter(b=>b.status==='pending').length;
+ sConfirmed.textContent=bs.filter(b=>b.status==='confirmed').length;sCustomers.textContent=cs.length;
+}
+
+function loyaltyMessage(encodedPhone){
+ const phone=decodeURIComponent(encodedPhone);
+ const cs=getCustomers(), key=phone.replace(/\D/g,'');
+ const c=cs[key]; if(!c)return;
+ const remaining=Math.max(0,7-c.visits);
+ let text='';
+ if(c.visits>=7){
+   text=`مرحباً ${c.name} 👋%0Aمبروك! وصلت إلى زيارتك السابعة في Barber Bomb 🎁%0Aالزيارة السابعة مجانية. نتشرف فيك دائماً!`;
+ }else{
+   text=`مرحباً ${c.name} 👋%0Aشكراً لزيارتك Barber Bomb.%0Aتم تسجيل ${c.visits} من 7 زيارات.%0Aباقي لك ${remaining} زيارات لتحصل على الزيارة السابعة مجاناً 🎁`;
+ }
+ document.getElementById('waText').value=decodeURIComponent(text);
+ document.getElementById('waPanel').style.display='block';
+ document.getElementById('waPanel').dataset.phone=phone.replace(/\D/g,'');
+}
+function openWA(){
+ const phone=document.getElementById('waPanel').dataset.phone;
+ const text=encodeURIComponent(document.getElementById('waText').value);
+ window.open('https://wa.me/'+phone+'?text='+text,'_blank');
+}
+function closeWA(){document.getElementById('waPanel').style.display='none'}
+
+async function renderAll(){
+ try{
+  await Promise.all([getBookingsAsync(),getCustomersAsync()]);
+ }catch(e){
+  if(e.message) console.warn(e.message);
+ }
+ renderStats();renderBookings();renderCustomers();
+}
+function showTab(id,btn){
+ document.getElementById('bookings').style.display=id==='bookings'?'block':'none';
+ document.getElementById('customers').style.display=id==='customers'?'block':'none';
+ document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+ renderAll();
+}
+renderAll();
+</script>
+<div id="waPanel" style="display:none;position:fixed;inset:0;background:#000b;z-index:20;padding:25px;overflow:auto">
+ <div style="max-width:620px;margin:50px auto;background:#0e0e0e;border:1px solid #3b2d16;border-radius:14px;padding:22px;color:#fff">
+  <h2 style="color:#e1b447">رسالة واتساب جاهزة</h2>
+  <textarea id="waText" style="width:100%;min-height:170px;background:#111;color:#fff;border:1px solid #444;border-radius:8px;padding:12px"></textarea>
+  <div style="display:flex;gap:8px;margin-top:10px"><button class="action" onclick="openWA()">فتح واتساب</button><button class="action" onclick="closeWA()">إغلاق</button></div>
+ </div>
+</div>
+</body></html>
